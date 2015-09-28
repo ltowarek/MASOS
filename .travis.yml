@@ -1,0 +1,13 @@
+language: c++
+compiler: gcc
+before_install:
+    - yes | sudo add-apt-repository ppa:fkrull/deadsnakes
+    - sudo apt-get update
+    - sudo apt-get install python3.4
+before_script:
+    - python3.4 --version
+script:
+    - cd 1
+    - chmod +x build.sh && ./build.sh
+    - chmod +x test.sh && ./test.sh
+    - cd ..
