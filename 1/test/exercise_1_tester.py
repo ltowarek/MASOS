@@ -67,6 +67,7 @@ def is_output_valid(actual_output, expected_output):
 
 
 def run(args):
+    logging.info('Testing {} - {}'.format(args.input_file, args.output_file))
     arguments = read_file(args.input_file)
     actual_output = execute_command(args.command, arguments, args.timeout)
     expected_output = read_file(args.output_file)
