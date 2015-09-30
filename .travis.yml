@@ -6,6 +6,16 @@ before_install:
     - sudo apt-get install python3.4
 before_script:
     - python3.4 --version
+    - wget https://googledrive.com/host/0B7uGehMLGwSKSjFybUkzRFk2R0k/test1 -O 1/test/sample_input/test1
+    - wget https://googledrive.com/host/0B7uGehMLGwSKSjFybUkzRFk2R0k/test2 -O 1/test/sample_input/test2
+    - wget https://googledrive.com/host/0B7uGehMLGwSKSjFybUkzRFk2R0k/test3 -O 1/test/sample_input/test3
+    - wget https://googledrive.com/host/0B7uGehMLGwSKSjFybUkzRFk2R0k/test4 -O 1/test/sample_input/test4
+    - wget https://googledrive.com/host/0B7uGehMLGwSKSjFybUkzRFk2R0k/test5 -O 1/test/sample_input/test5
+    - wget https://googledrive.com/host/0B7uGehMLGwSKMkE3dlBNS19oYXM/wzor1 -O 1/test/sample_output/wzor1
+    - wget https://googledrive.com/host/0B7uGehMLGwSKMkE3dlBNS19oYXM/wzor2 -O 1/test/sample_output/wzor2
+    - wget https://googledrive.com/host/0B7uGehMLGwSKMkE3dlBNS19oYXM/wzor3 -O 1/test/sample_output/wzor3
+    - wget https://googledrive.com/host/0B7uGehMLGwSKMkE3dlBNS19oYXM/wzor4 -O 1/test/sample_output/wzor4
+    - wget https://googledrive.com/host/0B7uGehMLGwSKMkE3dlBNS19oYXM/wzor5 -O 1/test/sample_output/wzor5
 script:
     - cd 1
     - chmod +x build.sh && ./build.sh
