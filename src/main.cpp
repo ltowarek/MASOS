@@ -1,59 +1,75 @@
-#include <iostream>
 #include <vector>
+#include <stdio.h>
 #include <gmp.h>
 
 using namespace std;
 
 int main() {
-
-	mpf_t f;
-
+	
+	mpf_t tmp;
     int d;
-	cin >> d;
+	scanf("%d", &d);
 
-	float sum = 0;
+	mpf_t sum;
+	mpf_init_set_d(sum, 0);
 
 	/***Input***/
-    vector<float> xn;
-    float x;
-    while (cin >> x) {
+    vector<mpf_t> xn;
+    mpf_t x;
+    while (gmp_scanf ("%Zd", x)) {
         xn.push_back(x);
-		sum += x;
+		mpf_add(tmp, sum, x);
+		mpf_swap(sum, tmp);
     }
 
 	int n = xn.size();
 
 #ifdef _DEBUG
-	cout << "N: " << n << endl;
+	printf("N:%d\n", n);
 #endif 
 
 	/***Exercise 1***/
-	float average = sum / n;
+	mpf_t average;
+	mpf_div_ui(average, sum, n);
 
 #ifdef _DEBUG
-	cout << "AVG: ";
+	printf("AVG: ");
 #endif 
-	cout << average << endl;
+	gmp_printf("%Zd\n", average);
 
 	/***Exercise 2***/
-	float first = 0;
-	float second = 0;
-	
+	mpf_t first, second;
+	mpf_init_set_d(first, 0);
+	mpf_init_set_d(second, 0);
+
 	for (int i = 0; i < n; i++) {
-		first += pow(xn[i], 2);
-		second += xn[i];
+		mpf_t pow;
+		mpf_mul(pow, xn[i], xn[i]);
+		mpf_add(tmp, first, pow);
+		mpf_swap(tmp, first);
+
+		mpf_add(tmp, second, xn[i]);
+		mpf_swap(tmp, second);
+
+		mpf_clear(pow);
 	}
 	
-	first /= n;
-	second /= n;
-	second = pow(second, 2);
+	mpf_div_ui(tmp, first, n);
+	mpf_swap(tmp, first);
+	
+	mpf_div_ui(tmp, second, n);
+	mpf_swap(tmp, second);
+	mpf_mul(tmp, second, second);
+	mpf_swap(tmp, second);
 
-	float variance = first - second;
+	mpf_t variance;
+	mpf_sub(variance, first, second);
+
 
 #ifdef _DEBUG
-	cout << "VARIANCE: ";
+	printf("VARIANCE: ");
 #endif 
-	cout << variance << endl;
+	gmp_printf("%Zd\n", variance);
 
 	/***Exercise 3***/
 	int p, p_min = p = n;
@@ -61,7 +77,7 @@ int main() {
 	while (--p) {
 		bool valid = true;
 		for (int k = 0; k < n - p; k++) {
-			if (xn[k] != xn[k+p]) {
+			if (mpf_cmp(xn[k], xn[k+p])) {
 				valid = false;
 				break;
 			}
@@ -72,9 +88,16 @@ int main() {
 	}
 
 #ifdef _DEBUG
-	cout << "Perdiod: ";
+	printf("Perdiod: ");
 #endif 
-	cout << p_min << endl;
+	printf("%d\n", p_min);
+
+	mpf_clear(sum);
+	mpf_clear(average);
+	mpf_clear(first);
+	mpf_clear(second);
+	mpf_clear(tmp);
+	mpf_clear(variance);
 
     return 0;
 }
