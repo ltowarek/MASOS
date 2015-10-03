@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string>
 
+#include "gmp.h"
+
 int main(int argc, char** argv) {
     std::string input = "";
     while (std::cin >> input) {
