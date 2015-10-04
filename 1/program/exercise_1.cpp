@@ -5,7 +5,10 @@
 
 static const bool is_debug = false;
 
-void print(char *buffer) {
+void print(mpf_t &number) {
+    char *buffer = NULL;
+    gmp_asprintf(&buffer, "%Ff", number);
+
     int counter = strlen(buffer) - 2;
 
     while (buffer[counter] == '0') {
@@ -18,6 +21,8 @@ void print(char *buffer) {
     }
 
     printf("%s\n", buffer);
+
+    free(buffer);
 }
 
 int main(int argc, char** argv) {
@@ -58,10 +63,7 @@ int main(int argc, char** argv) {
 
     mpf_div_ui(average, sum, n);
 
-    char *buffer = NULL;
-    gmp_asprintf(&buffer, "%Ff", average);
-    print(buffer);
-    free(buffer);
+    print(average);
 
     mpf_t first;
     mpf_init(first);
@@ -96,10 +98,7 @@ int main(int argc, char** argv) {
     mpf_init(variance);
     mpf_sub(variance, first, second);
 
-    buffer = NULL;
-    gmp_asprintf(&buffer, "%Ff", variance);
-    print(buffer);
-    free(buffer);
+    print(variance);
 
     int p = n;
     int p_min = n;
