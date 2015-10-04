@@ -49,7 +49,7 @@ def execute_command(command, arguments, timeout):
                                          universal_newlines=True, timeout=timeout)
     except subprocess.CalledProcessError as error:
         logging.error('Failed to execute command!')
-        output = error.output
+        logging.error('Output: {}'.format(error.output))
     except subprocess.TimeoutExpired:
         logging.error('Command timed out!')
 
