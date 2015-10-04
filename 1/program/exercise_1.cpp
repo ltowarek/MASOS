@@ -59,7 +59,7 @@ int main(int argc, char** argv) {
     mpf_div_ui(average, sum, n);
 
     char *buffer = NULL;
-    gmp_asprintf(&buffer, "%Ff\n", average);
+    gmp_asprintf(&buffer, "%Ff", average);
     print(buffer);
     free(buffer);
 
@@ -96,7 +96,7 @@ int main(int argc, char** argv) {
     mpf_init(variance);
     mpf_sub(variance, first, second);
 
-    gmp_asprintf(&buffer, "%Ff\n", variance);
+    gmp_asprintf(&buffer, "%Ff", variance);
     print(buffer);
     free(buffer);
 
