@@ -1,8 +1,24 @@
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
 #include "gmp.h"
 
 static const bool is_debug = false;
+
+void print(char *buffer) {
+    int counter = strlen(buffer) - 2;
+
+    while (buffer[counter] == '0') {
+        buffer[counter] = '\0';
+        --counter;
+    }
+
+    if (buffer[counter] == '.') {
+        buffer[counter] = '\0';
+    }
+
+    printf("%s\n", buffer);
+}
 
 int main(int argc, char** argv) {
     int d = 0;
@@ -34,14 +50,18 @@ int main(int argc, char** argv) {
     }
 
     if (is_debug) {
-        printf("%d", n);
+        printf("%d\n", n);
     }
 
     mpf_t average;
     mpf_init(average);
 
     mpf_div_ui(average, sum, n);
-    gmp_printf("%Ff\n", average);
+
+    char *buffer = NULL;
+    gmp_asprintf(&buffer, "%Ff\n", average);
+
+    print(buffer);
 
     mpf_t first;
     mpf_init(first);
@@ -75,7 +95,7 @@ int main(int argc, char** argv) {
     mpf_t variance;
     mpf_sub(variance, first, second);
 
-    gmp_printf("%Ff\n", variance);
+    gmp_printf("%ff\n", variance);
 
     int p = n;
     int p_min = n;
