@@ -60,8 +60,8 @@ int main(int argc, char** argv) {
 
     char *buffer = NULL;
     gmp_asprintf(&buffer, "%Ff\n", average);
-
     print(buffer);
+    free(buffer);
 
     mpf_t first;
     mpf_init(first);
@@ -95,7 +95,9 @@ int main(int argc, char** argv) {
     mpf_t variance;
     mpf_sub(variance, first, second);
 
-    gmp_printf("%ff\n", variance);
+    gmp_asprintf(&buffer, "%Ff\n", variance);
+    print(buffer);
+    free(buffer);
 
     int p = n;
     int p_min = n;
