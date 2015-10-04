@@ -15,23 +15,22 @@ int main(int argc, char** argv) {
     // TODO: Set precision to *d*
 
     mpf_t tmp;
-    mpf_init_set_d(tmp, 0.0);
+    mpf_init(tmp);
 
     mpf_t sum;
-    mpf_init_set_d(sum, 0.0);
+    mpf_init(sum);
 
+    // 1 <= n <= 2^24 (16777216)
     size_t n = 0;
-    mpf_t *xn = NULL;
+    mpf_t *xn = (mpf_t*) malloc(16777216 * sizeof(mpf_t));
     mpf_t x;
-    mpf_init_set_d(x, 0.0);
+    mpf_init(x);
 
     while (gmp_scanf("%Ff", x) != EOF) {
-        n++;
-        xn = (mpf_t*) realloc(xn, n * sizeof(mpf_t));
-        mpf_init_set(xn[n-1], x);
-
+        mpf_init_set(xn[n], x);
         mpf_add(tmp, sum, x);
         mpf_swap(sum, tmp);
+        n++;
     }
 
     if (is_debug) {
@@ -39,20 +38,20 @@ int main(int argc, char** argv) {
     }
 
     mpf_t average;
-    mpf_init_set_d(average, 0.0);
+    mpf_init(average);
 
     mpf_div_ui(average, sum, n);
     gmp_printf("%Ff\n", average);
 
     mpf_t first;
-    mpf_init_set_d(first, 0.0);
+    mpf_init(first);
 
     mpf_t second;
-    mpf_init_set_d(second, 0.0);
+    mpf_init(second);
 
     for (int i = 0; i < n; ++i) {
         mpf_t power;
-        mpf_init_set_d(power, 0.0);
+        mpf_init(power);
 
         mpf_mul(power, xn[i], xn[i]);
         mpf_add(tmp, first, power);
