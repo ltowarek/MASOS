@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
     mpf_init(sum);
 
     // 1 <= n <= 2^24 (16777216)
-    size_t n = 0;
+    int n = 0;
     mpf_t *xn = (mpf_t*) malloc(16777216 * sizeof(mpf_t));
     mpf_t x;
     mpf_init(x);
