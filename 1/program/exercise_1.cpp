@@ -96,6 +96,7 @@ int main(int argc, char** argv) {
     mpf_init(variance);
     mpf_sub(variance, first, second);
 
+    buffer = NULL;
     gmp_asprintf(&buffer, "%Ff", variance);
     print(buffer);
     free(buffer);
