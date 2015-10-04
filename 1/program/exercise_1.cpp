@@ -93,6 +93,7 @@ int main(int argc, char** argv) {
     mpf_swap(tmp, second);
 
     mpf_t variance;
+    mpf_init(variance);
     mpf_sub(variance, first, second);
 
     gmp_asprintf(&buffer, "%Ff\n", variance);
