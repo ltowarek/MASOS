@@ -100,10 +100,10 @@ int main(int argc, char** argv) {
 
     print(variance);
 
-    int p = n;
+    int p = 0;
     int p_min = n;
 
-    while (--p) {
+    while (++p) {
         bool is_valid = true;
         for (int i = 0; i < n - p; ++i) {
             if (mpf_cmp(xn[i], xn[i+p])) {
@@ -113,6 +113,7 @@ int main(int argc, char** argv) {
         }
         if (is_valid) {
             p_min = p;
+            break;
         }
     }
 
