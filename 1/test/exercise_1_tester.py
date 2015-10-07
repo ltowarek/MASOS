@@ -79,7 +79,7 @@ def run(args):
     actual_output = execute_command(args.command, arguments, args.timeout)
     expected_output = read_file(args.output_file)
     is_valid = is_output_valid(actual_output, expected_output)
-    logging.info('TEST PASSED') if is_valid else logging.info('TEST FAILED')
+    logging.info('TEST PASSED\n') if is_valid else logging.info('TEST FAILED\n')
     return is_valid
 
 
