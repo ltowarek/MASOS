@@ -1,5 +1,6 @@
 #include <cstdlib>
 #include <iostream>
+#include <string>
 #include <vector>
 #include <gmpxx.h>
 
@@ -30,10 +31,14 @@ int main(int argc, char** argv) {
     int n = 0;
     std::vector<mpf_class> xn;
     mpf_class tmp;
-
-    while (std::cin >> tmp) {
-        xn.push_back(tmp);
-        n++;
+	std::string str;
+    while (std::cin >> str) {
+        try {
+			xn.push_back(mpf_class(str));
+		} catch (...) {
+			std::cout << "Failed with string: " << str << std::endl;
+		}
+		n++;
     }
 
     if (n < 1) {
