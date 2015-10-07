@@ -11,6 +11,8 @@ void print(mpf_class &number) {
 }
 
 int main(int argc, char** argv) {
+	std::cin.sync_with_stdio(false);
+
     if (argc != 2) {
         std::cout << "Wrong number of parameters!" << std::endl;
         return -1;
