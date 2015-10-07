@@ -1,6 +1,6 @@
 #!/bin/sh
 ls
-ls test/sample_input
+ls -la test/sample_input
 python3.4 test/exercise_1_tester.py "build/exercise_1.exe 5" "test/sample_input/test0" "test/sample_output/wzor0"
 python3.4 test/exercise_1_tester.py "build/exercise_1.exe 5" "test/sample_input/test1" "test/sample_output/wzor1"
 python3.4 test/exercise_1_tester.py "build/exercise_1.exe 5" "test/sample_input/test2" "test/sample_output/wzor2"
