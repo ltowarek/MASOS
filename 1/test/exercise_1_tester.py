@@ -36,7 +36,7 @@ def read_file(file_path):
         logging.error('Failed to open {}!'.format(file_path))
         raise
 
-    logging.debug('{} content: {}'.format(file_path, output))
+    logging.debug('{} content:\n{}'.format(file_path, output))
     return output
 
 
@@ -53,14 +53,14 @@ def execute_command(command, arguments, timeout):
     except subprocess.TimeoutExpired:
         logging.error('Command timed out!')
 
-    logging.debug('Output: {}'.format(output))
+    logging.debug('Output:\n{}'.format(output))
 
     return output
 
 
 def is_output_valid(actual_output, expected_output):
-    logging.debug('Actual output: {}'.format(actual_output))
-    logging.debug('Expected output: {}'.format(expected_output))
+    logging.info('Actual output:\n{}'.format(actual_output))
+    logging.info('Expected output:\n{}'.format(expected_output))
     is_valid = True if actual_output == expected_output else False
     logging.debug('Is valid: {}'.format(is_valid))
     return is_valid
