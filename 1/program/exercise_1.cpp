@@ -3,7 +3,7 @@
 #include <vector>
 #include <gmpxx.h>
 
-static const bool is_debug = true;
+static const bool is_debug = false;
 
 void print(mpf_class &number) {
     std::cout << std::fixed;

@@ -59,8 +59,15 @@ def execute_command(command, arguments, timeout):
 
 
 def is_output_valid(actual_output, expected_output):
-    logging.info('Actual output:\n{}'.format(actual_output))
-    logging.info('Expected output:\n{}'.format(expected_output))
+    if not actual_output or len(actual_output) < 512:
+        logging.info('Actual output:\n{}'.format(actual_output))
+    else:
+        logging.debug('Actual output:\n{}'.format(actual_output))
+
+    if not expected_output or len(expected_output) < 512:
+        logging.info('Expected output:\n{}'.format(expected_output))
+    else:
+        logging.debug('Expected output:\n{}'.format(expected_output))
     is_valid = True if actual_output == expected_output else False
     logging.debug('Is valid: {}'.format(is_valid))
     return is_valid
