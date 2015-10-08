@@ -8,16 +8,19 @@
 
 static const bool is_debug = false;
 
-std::string fixTrailingZeros(mpf_class &num, int p) {
+std::string fixTrailingZeros(mpf_class &num, int precision) {
     std::ostringstream strout;
     strout.setf(std::ios::fixed, std::ios::floatfield);
-    strout.precision(p);
+    strout.precision(precision);
     strout << num;
     std::string str = strout.str();
     size_t end = str.find_last_not_of( '0' ) + 1;
     str.erase(end);
     if (str[str.length() - 1] == '.') {
-        return str.erase(--end);
+        str.erase(--end);
+    }
+    if (str.length() == 0) {
+        str = "0";
     }
     return str;
 }
