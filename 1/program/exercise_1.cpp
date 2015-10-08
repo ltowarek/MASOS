@@ -3,16 +3,18 @@
 #include <string>
 #include <vector>
 #include <gmpxx.h>
+#include <iomanip>
 
 static const bool is_debug = false;
 
-void print(mpq_class &number) {
-    std::cout << std::fixed;
-    std::cout << number << std::endl;
-}
-
 int main(int argc, char** argv) {
 	std::cin.sync_with_stdio(false);
+
+	//2^16 = 65536 -> from spec
+	//TODO: check if this value need to be multiplied [base(10) or base(2)] ??
+    mpf_set_default_prec(65536);
+	std::cout.setf(std::ios::fixed, std::ios::floatfield);
+	std::cout.precision(20000);
 
     if (argc != 2) {
         std::cout << "Wrong number of parameters!" << std::endl;
@@ -25,7 +27,7 @@ int main(int argc, char** argv) {
         std::cout << "d: " << d << std::endl;
     }
 
-    // TODO: Set precision to *d*
+    //std::cout.precision(d);
 
     // 1 <= n <= 2^24 (16777216)
     int n = 0;
@@ -56,7 +58,8 @@ int main(int argc, char** argv) {
         sum += xn[i];
     }
     mpq_class mean = sum / n;
-    print(mean);
+	mpf_class f_mean(mean);
+	std::cout << f_mean << std::endl;
 
     // Variance
     mpq_class first;
@@ -69,7 +72,8 @@ int main(int argc, char** argv) {
     second /= n;
     second *= second;
     mpq_class variance = first - second;
-    print(variance);
+	mpf_class f_variance(variance);
+	std::cout << f_variance << std::endl;
 
     // Period
     int p = 0;
