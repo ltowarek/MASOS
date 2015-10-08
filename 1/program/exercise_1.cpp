@@ -6,7 +6,7 @@
 
 static const bool is_debug = false;
 
-void print(mpf_class &number) {
+void print(mpq_class &number) {
     std::cout << std::fixed;
     std::cout << number << std::endl;
 }
@@ -29,12 +29,12 @@ int main(int argc, char** argv) {
 
     // 1 <= n <= 2^24 (16777216)
     int n = 0;
-    std::vector<mpf_class> xn;
-    mpf_class tmp;
+    std::vector<mpq_class> xn;
+    mpq_class tmp;
 	std::string str;
     while (std::cin >> str) {
         try {
-			xn.push_back(mpf_class(str));
+			xn.push_back(mpq_class(str));
 		} catch (...) {
 			std::cout << "Failed with string: " << str << std::endl;
 		}
@@ -51,16 +51,16 @@ int main(int argc, char** argv) {
     }
 
     // Mean value
-    mpf_class sum;
+    mpq_class sum;
     for (int i = 0; i < n; ++i) {
         sum += xn[i];
     }
-    mpf_class mean = sum / n;
+    mpq_class mean = sum / n;
     print(mean);
 
     // Variance
-    mpf_class first;
-    mpf_class second;
+    mpq_class first;
+    mpq_class second;
     for (int i = 0; i < n; ++i) {
         first += (xn[i] * xn[i]);
         second += xn[i];
@@ -68,7 +68,7 @@ int main(int argc, char** argv) {
     first /= n;
     second /= n;
     second *= second;
-    mpf_class variance = first - second;
+    mpq_class variance = first - second;
     print(variance);
 
     // Period
