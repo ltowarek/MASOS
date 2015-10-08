@@ -9,24 +9,24 @@
 static const bool is_debug = false;
 
 std::string fixTrailingZeros(mpf_class &num, int p) {
-	std::ostringstream strout;
-	strout.setf(std::ios::fixed, std::ios::floatfield);
-	strout.precision(p);
+    std::ostringstream strout;
+    strout.setf(std::ios::fixed, std::ios::floatfield);
+    strout.precision(p);
     strout << num;
     std::string str = strout.str();
     size_t end = str.find_last_not_of( '0' ) + 1;
     str.erase(end);
-	if (str[str.length() - 1] == '.') {
-		return str.erase(--end);
-	}
-	return str;
+    if (str[str.length() - 1] == '.') {
+        return str.erase(--end);
+    }
+    return str;
 }
 
 int main(int argc, char** argv) {
-	std::cin.sync_with_stdio(false);
+    std::cin.sync_with_stdio(false);
 
-	//2^16 = 65536 -> from spec
-	//TODO: check if this value need to be multiplied [base(10) or base(2)] ??
+    //2^16 = 65536 -> from spec
+    //TODO: check if this value need to be multiplied [base(10) or base(2)] ??
     mpf_set_default_prec(65536);
 
     if (argc != 2) {
@@ -44,14 +44,14 @@ int main(int argc, char** argv) {
     int n = 0;
     std::vector<mpq_class> xn;
     mpq_class tmp;
-	std::string str;
+    std::string str;
     while (std::cin >> str) {
         try {
-			xn.push_back(mpq_class(str));
-		} catch (...) {
-			std::cout << "Failed with string: " << str << std::endl;
-		}
-		n++;
+            xn.push_back(mpq_class(str));
+        } catch (...) {
+            std::cout << "Failed with string: " << str << std::endl;
+        }
+        n++;
     }
 
     if (n < 1) {
@@ -69,8 +69,8 @@ int main(int argc, char** argv) {
         sum += xn[i];
     }
     mpq_class mean = sum / n;
-	mpf_class f_mean(mean);
-	std::cout << fixTrailingZeros(f_mean, d) << std::endl;
+    mpf_class f_mean(mean);
+    std::cout << fixTrailingZeros(f_mean, d) << std::endl;
 
     // Variance
     mpq_class first;
@@ -83,8 +83,8 @@ int main(int argc, char** argv) {
     second /= n;
     second *= second;
     mpq_class variance = first - second;
-	mpf_class f_variance(variance);
-	std::cout << fixTrailingZeros(f_variance, d) << std::endl;
+    mpf_class f_variance(variance);
+    std::cout << fixTrailingZeros(f_variance, d) << std::endl;
 
     // Period
     int p = 0;
