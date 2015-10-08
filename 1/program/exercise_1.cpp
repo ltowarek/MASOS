@@ -10,12 +10,6 @@ static const bool is_debug = false;
 int main(int argc, char** argv) {
 	std::cin.sync_with_stdio(false);
 
-	//2^16 = 65536 -> from spec
-	//TODO: check if this value need to be multiplied [base(10) or base(2)] ??
-    mpf_set_default_prec(65536);
-	std::cout.setf(std::ios::fixed, std::ios::floatfield);
-	std::cout.precision(20000);
-
     if (argc != 2) {
         std::cout << "Wrong number of parameters!" << std::endl;
         return -1;
@@ -27,7 +21,11 @@ int main(int argc, char** argv) {
         std::cout << "d: " << d << std::endl;
     }
 
-    //std::cout.precision(d);
+    //2^16 = 65536 -> from spec
+	//TODO: check if this value need to be multiplied [base(10) or base(2)] ??
+    mpf_set_default_prec(65536);
+	std::cout.setf(std::ios::fixed, std::ios::floatfield);
+	std::cout.precision(d);
 
     // 1 <= n <= 2^24 (16777216)
     int n = 0;
