@@ -9,9 +9,12 @@ static const bool is_debug = false;
 
 std::string fixTrailingZeros(mpf_class &num, int precision) {
     char *buffer = NULL;
-    gmp_asprintf(&buffer, "%.*Ff", precision, num.get_mpf_t());
+    gmp_asprintf(&buffer, "%.*Ff", precision + 2, num.get_mpf_t());
 
     int counter = strlen(buffer) - 2;
+
+    buffer[counter] = '\0';
+    --counter;
 
     while (buffer[counter] == '0') {
         buffer[counter] = '\0';
