@@ -11,11 +11,21 @@ before_script:
     - wget https://googledrive.com/host/0B7uGehMLGwSKSjFybUkzRFk2R0k/test3 -O 1/test/sample_input/test3
     - wget https://googledrive.com/host/0B7uGehMLGwSKSjFybUkzRFk2R0k/test4 -O 1/test/sample_input/test4
     - wget https://googledrive.com/host/0B7uGehMLGwSKSjFybUkzRFk2R0k/test5 -O 1/test/sample_input/test5
+    - wget https://googledrive.com/host/0B7uGehMLGwSKSjFybUkzRFk2R0k/test6 -O 1/test/sample_input/test6
+    - wget https://googledrive.com/host/0B7uGehMLGwSKSjFybUkzRFk2R0k/test7 -O 1/test/sample_input/test7
+    - wget https://googledrive.com/host/0B7uGehMLGwSKSjFybUkzRFk2R0k/test8 -O 1/test/sample_input/test8
+    - wget https://googledrive.com/host/0B7uGehMLGwSKSjFybUkzRFk2R0k/test9 -O 1/test/sample_input/test9
+    - wget https://googledrive.com/host/0B7uGehMLGwSKSjFybUkzRFk2R0k/test10 -O 1/test/sample_input/test10
     - wget https://googledrive.com/host/0B7uGehMLGwSKMkE3dlBNS19oYXM/wzor1 -O 1/test/sample_output/wzor1
     - wget https://googledrive.com/host/0B7uGehMLGwSKMkE3dlBNS19oYXM/wzor2 -O 1/test/sample_output/wzor2
     - wget https://googledrive.com/host/0B7uGehMLGwSKMkE3dlBNS19oYXM/wzor3 -O 1/test/sample_output/wzor3
     - wget https://googledrive.com/host/0B7uGehMLGwSKMkE3dlBNS19oYXM/wzor4 -O 1/test/sample_output/wzor4
     - wget https://googledrive.com/host/0B7uGehMLGwSKMkE3dlBNS19oYXM/wzor5 -O 1/test/sample_output/wzor5
+    - wget https://googledrive.com/host/0B7uGehMLGwSKMkE3dlBNS19oYXM/wzor6 -O 1/test/sample_output/wzor6
+    - wget https://googledrive.com/host/0B7uGehMLGwSKMkE3dlBNS19oYXM/wzor7 -O 1/test/sample_output/wzor7
+    - wget https://googledrive.com/host/0B7uGehMLGwSKMkE3dlBNS19oYXM/wzor8 -O 1/test/sample_output/wzor8
+    - wget https://googledrive.com/host/0B7uGehMLGwSKMkE3dlBNS19oYXM/wzor9 -O 1/test/sample_output/wzor9
+    - wget https://googledrive.com/host/0B7uGehMLGwSKMkE3dlBNS19oYXM/wzor10 -O 1/test/sample_output/wzor10
 script:
     - cd 1
     - ./build.sh
