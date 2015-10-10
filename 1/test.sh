@@ -12,3 +12,8 @@ python3.4 test/exercise_1_tester.py "build/exercise_1.exe 9999" "test/sample_inp
 python3.4 test/exercise_1_tester.py "build/exercise_1.exe 0" "test/sample_input/test2" "test/sample_output/wzor2_0"
 python3.4 test/exercise_1_tester.py "build/exercise_1.exe 1" "test/sample_input/test2" "test/sample_output/wzor2_1"
 python3.4 test/exercise_1_tester.py "build/exercise_1.exe 10" "test/sample_input/test2" "test/sample_output/wzor2_10"
+python3.4 test/exercise_1_tester.py "build/exercise_1.exe 0" "test/sample_input/test6" "test/sample_output/wzor6"
+python3.4 test/exercise_1_tester.py "build/exercise_1.exe 2" "test/sample_input/test7" "test/sample_output/wzor7"
+python3.4 test/exercise_1_tester.py "build/exercise_1.exe 1" "test/sample_input/test8" "test/sample_output/wzor8"
+python3.4 test/exercise_1_tester.py "build/exercise_1.exe 6" "test/sample_input/test9" "test/sample_output/wzor9"
+python3.4 test/exercise_1_tester.py "build/exercise_1.exe 8" "test/sample_input/test10" "test/sample_output/wzor10"
