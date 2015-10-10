@@ -4,25 +4,25 @@
 #include <vector>
 #include <gmpxx.h>
 #include <iomanip>
-#include <sstream>
 
 static const bool is_debug = false;
 
 std::string fixTrailingZeros(mpf_class &num, int precision) {
-    std::ostringstream strout;
-    strout.setf(std::ios::fixed, std::ios::floatfield);
-    strout.precision(precision);
-    strout << num;
-    std::string str = strout.str();
-    size_t end = str.find_last_not_of( '0' ) + 1;
-    str.erase(end);
-    if (str[str.length() - 1] == '.') {
-        str.erase(--end);
+    char *buffer = NULL;
+    gmp_asprintf(&buffer, "%.*Ff", precision, num.get_mpf_t());
+
+    int counter = strlen(buffer) - 2;
+
+    while (buffer[counter] == '0') {
+        buffer[counter] = '\0';
+        --counter;
     }
-    if (str.length() == 0) {
-        str = "0";
+
+    if (buffer[counter] == '.') {
+        buffer[counter] = '\0';
     }
-    return str;
+
+    return std::string(buffer);
 }
 
 int main(int argc, char** argv) {
