@@ -27,7 +27,7 @@ before_script:
     - wget https://googledrive.com/host/0B7uGehMLGwSKMkE3dlBNS19oYXM/wzor9 -O 1/test/sample_output/wzor9
     - wget https://googledrive.com/host/0B7uGehMLGwSKMkE3dlBNS19oYXM/wzor10 -O 1/test/sample_output/wzor10
 script:
-    - cd 1
     - ./build.sh
+    - cd 1
     - ./test.sh
     - cd ..
