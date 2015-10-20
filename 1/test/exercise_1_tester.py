@@ -47,11 +47,11 @@ def execute_command(command, arguments, timeout):
         # Input parameter is used because if all arguments are passed in command then MemoryError raises
         output = subprocess.check_output(command, input=arguments, shell=True, stderr=subprocess.STDOUT,
                                          universal_newlines=True, timeout=timeout)
+    except subprocess.TimeoutExpired:
+        logging.error('Command timed out!')
     except subprocess.CalledProcessError as error:
         logging.error('Failed to execute command!')
         logging.error('Output: {}'.format(error.output))
-    except subprocess.TimeoutExpired:
-        logging.error('Command timed out!')
 
     logging.debug('Output:\n{}'.format(output))
 
