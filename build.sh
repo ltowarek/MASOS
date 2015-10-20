@@ -3,3 +3,6 @@
 cd 1
 ./compile.sh
 cd ..
+cd 2
+./compile.sh
+cd ..
