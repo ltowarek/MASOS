@@ -7,6 +7,13 @@
 
 static const bool is_debug = false;
 
+mpq_class parseFraction(const std::string &fraction) {
+    std::size_t slash_position = fraction.find("/");
+    mpz_class numerator = mpz_class(fraction.substr(0, slash_position));
+    mpz_class denominator = mpz_class(fraction.substr(slash_position + 1));
+    return mpq_class(numerator, denominator);
+}
+
 std::string fixTrailingZeros(mpf_class &num, int precision) {
     char *buffer = NULL;
     gmp_asprintf(&buffer, "%.*Ff", precision + 2, num.get_mpf_t());
@@ -49,11 +56,11 @@ int main(int argc, char** argv) {
     // 1 <= n <= 2^24 (16777216)
     int n = 0;
     std::vector<mpq_class> xn;
-    mpq_class tmp;
     std::string str;
     while (std::cin >> str) {
+        std::cout << str << std::endl;
         try {
-            xn.push_back(mpq_class(str));
+            xn.push_back(parseFraction(str));
         } catch (...) {
             std::cout << "Failed with string: " << str << std::endl;
         }
