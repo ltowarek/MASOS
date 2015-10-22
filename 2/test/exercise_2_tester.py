@@ -73,11 +73,11 @@ def is_output_valid(actual_output, expected_output):
         splitted_actual_output = actual_output.split('\n')
         splitted_expected_output = expected_output.split('\n')
         if splitted_actual_output[0] == splitted_expected_output[0]:
-            logging.info('AVERAGE output is equal')
+            logging.info('CHI output is equal')
         if splitted_actual_output[1] == splitted_expected_output[1]:
-            logging.info('VARIANCE output is equal')
+            logging.info('K_PLUS output is equal')
         if splitted_actual_output[2] == splitted_expected_output[2]:
-            logging.info('PERIOD output is equal')
+            logging.info('K_MINUX output is equal')
     logging.debug('Is valid: {}'.format(is_valid))
     return is_valid
 
