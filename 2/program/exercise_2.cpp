@@ -58,7 +58,6 @@ int main(int argc, char** argv) {
     std::vector<mpq_class> xn;
     std::string str;
     while (std::cin >> str) {
-        std::cout << str << std::endl;
         try {
             xn.push_back(parseFraction(str));
         } catch (...) {
@@ -76,48 +75,28 @@ int main(int argc, char** argv) {
         std::cout << "n: " << n << std::endl;
     }
 
-    // Mean value
-    mpq_class sum;
-    for (int i = 0; i < n; ++i) {
-        sum += xn[i];
-    }
-    mpq_class mean = sum / n;
-    mpf_class f_mean(mean);
-    std::cout << fixTrailingZeros(f_mean, d) << std::endl;
+    // Chi
+    mpf_class f_chi;
+    std::cout << fixTrailingZeros(f_chi, d) << std::endl;
 
-    // Variance
-    mpq_class first;
-    mpq_class second;
-    for (int i = 0; i < n; ++i) {
-        first += (xn[i] * xn[i]);
-        second += xn[i];
-    }
-    first /= n;
-    second /= n;
-    second *= second;
-    mpq_class variance = first - second;
-    mpf_class f_variance(variance);
-    std::cout << fixTrailingZeros(f_variance, d) << std::endl;
-
-    // Period
-    int p = 0;
-    int p_min = n;
-
-    while (++p) {
-        bool is_valid = true;
-        for (int i = 0; i < n - p; ++i) {
-            if (xn[i] != xn[i+p]) {
-                is_valid = false;
-                break;
-            }
+    // Kolmogorov
+    std::sort(xn.begin(), xn.end());
+    mpq_class k_plus;
+    mpq_class k_minus;
+    for (int i = 1; i < n; ++i) {
+        mpq_class tmp_k_plus = mpq_class(i, n) - xn[i - 1];
+        mpq_class tmp_k_minus = xn[i - 1] - mpq_class(i - 1, n);
+        if (tmp_k_plus > k_plus) {
+            k_plus = tmp_k_plus;
         }
-        if (is_valid) {
-            p_min = p;
-            break;
+        if (tmp_k_minus > k_minus) {
+            k_minus = tmp_k_minus;
         }
     }
-
-    std::cout << p_min << std::endl;
+    mpf_class f_k_plus(k_plus);
+    mpf_class f_k_minus(k_minus);
+    std::cout << fixTrailingZeros(f_k_plus, d) << std::endl;
+    std::cout << fixTrailingZeros(f_k_minus, d) << std::endl;
 
     return 0;
 }
