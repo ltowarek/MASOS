@@ -89,7 +89,10 @@ def run(args):
     expected_output = read_file(args.output_file)
     is_valid = is_output_valid(actual_output, expected_output)
     logging.info('TEST PASSED\n') if is_valid else logging.info('TEST FAILED\n')
-    return is_valid
+    if is_valid:
+        return 0
+    else:
+        return -1
 
 
 def main():
