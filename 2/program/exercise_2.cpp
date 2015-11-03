@@ -35,6 +35,22 @@ std::string fixTrailingZeros(mpf_class &num, int precision) {
     return std::string(buffer);
 }
 
+int getSizeOfScope(int i, std::vector<mpq_class> &xn) {
+	mpq_class from((i - 1) * (i - 1), 100);
+	mpq_class to((i * i), 100);
+
+	int size = 0;
+
+	for (int id = 0; id < xn.size(); id++) {
+		if (xn[id] >= from) {
+			if (xn[id] < to) {
+				size++;
+			}
+		}
+	}
+	return size;
+}
+
 int main(int argc, char** argv) {
     std::cin.sync_with_stdio(false);
 
@@ -75,12 +91,25 @@ int main(int argc, char** argv) {
         std::cout << "n: " << n << std::endl;
     }
 
+	std::sort(xn.begin(), xn.end());
+
     // Chi
-    mpf_class f_chi;
+	mpq_class chi;
+	int k = 10;
+	for (int i = 1; i <= k; i++) {
+		mpq_class pi(2 * i - 1, 100);
+		mpq_class npi(pi * n);
+		mpq_class Yi(getSizeOfScope(i, xn));
+		Yi -= npi;
+		Yi *= Yi;
+		Yi /= npi;
+		chi += Yi;
+	}
+
+    mpf_class f_chi(chi);
     std::cout << fixTrailingZeros(f_chi, d) << std::endl;
 
     // Kolmogorov
-    std::sort(xn.begin(), xn.end());
     mpq_class k_plus;
     mpq_class k_minus;
     for (int i = 1; i < n; ++i) {
