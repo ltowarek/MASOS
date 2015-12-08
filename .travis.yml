@@ -8,6 +8,3 @@ before_script:
     - python3.4 --version
 script:
     - ./build.sh
-    - cd 2
-    - ./test.sh
-    - cd ..
