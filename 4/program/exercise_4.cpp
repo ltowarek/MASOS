@@ -8,6 +8,8 @@
 static const bool is_debug = true;
 static const double a = 1.0;
 static const double b = 3.0;
+static const std::string result_file_name = "result.csv";
+static const std::string plot_script_file_name = "plot.p";
 
 //TODO: Change a and b to 0 and 1
 
@@ -44,6 +46,20 @@ void writeStringToFile(const std::string &file_name, const std::string &data) {
     f.close();
 }
 
+void createPlotScript(const std::string &result_file, std::string &script_code) {
+    std::ostringstream s;
+    s << "set datafile separator \",\"" << std::endl;
+    s << "set autoscale" << std::endl;
+    s << "set xtic auto" << std::endl;
+    s << "set ytic auto" << std::endl;
+    s << "set title \"TITLE\"" << std::endl;
+    s << "set xlabel \"x\"" << std::endl;
+    s << "set ylabel \"y\"" << std::endl;
+    s << "set xr [" << a << ":" << b <<"]" << std::endl;
+    s << "plot \"" << result_file << "\" notitle with linespoints" << std::endl;
+    script_code = s.str();
+}
+
 int main(int argc, char** argv) {
     if (argc != 3) {
         std::cout << "Wrong number of parameters!" << std::endl;
@@ -66,7 +82,16 @@ int main(int argc, char** argv) {
         std::cout << result << std::endl;
     }
 
-    writeStringToFile("result.csv", result);
+    writeStringToFile(result_file_name, result);
+
+    std::string plot_script;
+    createPlotScript(result_file_name, plot_script);
+
+    if (is_debug) {
+        std::cout << plot_script << std::endl;
+    }
+
+    writeStringToFile(plot_script_file_name, plot_script);
 
     return 0;
 }
