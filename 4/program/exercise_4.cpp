@@ -1,6 +1,8 @@
 #include <cmath>
 #include <cstdlib>
 #include <iostream>
+#include <string>
+#include <sstream>
 
 static const bool is_debug = true;
 static const double a = 1.0;
@@ -8,21 +10,27 @@ static const double b = 3.0;
 
 //TODO: Change a and b to 0 and 1
 
-double f(double x) {
+double f(const double x) {
     return pow(x, 2) - 5;
 }
 
-double df(double x) {
+double df(const double x) {
     return 2 * x;
 }
 
-double newton(double x, double epsilon) {
+double newton(const double kX, const double kEpsilon, std::ostringstream &result_stream) {
+    double x = kX;
     double y = f(x);
-    while ((std::abs(y) > epsilon) && (x >= a) && (x <= b)) {
+
+    while ((std::abs(y) > kEpsilon) && (x >= a) && (x <= b)) {
+        if (is_debug) {
+            std::cout << x << " " << y << std::endl;
+        }
+
+        result_stream << x << " " << y << std::endl;
+
         x = x - y / df(x);
         y = f(x);
-
-        std::cout << x << " " << y << std::endl;
     }
 
     return x;
@@ -39,10 +47,16 @@ int main(int argc, char** argv) {
 
     if (is_debug) {
         std::cout << "epsilon: " << epsilon << std::endl;
-        std::cout << x0 << " " << f(x0) << std::endl;
+        std::cout << "x0: " << x0 << std::endl;
     }
 
-    newton(x0, epsilon);
+    std::ostringstream result_stream;
+    newton(x0, epsilon, result_stream);
+    std::string result = result_stream.str();
+
+    if (is_debug) {
+        std::cout << result << std::endl;
+    }
 
     return 0;
 }
