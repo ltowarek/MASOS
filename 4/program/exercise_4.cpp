@@ -1,5 +1,6 @@
 #include <cmath>
 #include <cstdlib>
+#include <fstream>
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -27,13 +28,20 @@ double newton(const double kX, const double kEpsilon, std::ostringstream &result
             std::cout << x << " " << y << std::endl;
         }
 
-        result_stream << x << " " << y << std::endl;
+        result_stream << x << "," << y << std::endl;
 
         x = x - y / df(x);
         y = f(x);
     }
 
     return x;
+}
+
+void writeStringToFile(const std::string &file_name, const std::string &data) {
+    std::ofstream f;
+    f.open(file_name.c_str());
+    f << data;
+    f.close();
 }
 
 int main(int argc, char** argv) {
@@ -57,6 +65,8 @@ int main(int argc, char** argv) {
     if (is_debug) {
         std::cout << result << std::endl;
     }
+
+    writeStringToFile("result.csv", result);
 
     return 0;
 }
