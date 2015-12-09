@@ -19,11 +19,11 @@ double df(const double x) {
     return 2 * x;
 }
 
-double newton(const double kX, const double kEpsilon, std::ostringstream &result_stream) {
-    double x = kX;
+double newton(const double x0, const double epsilon, std::ostringstream &result_stream) {
+    double x = x0;
     double y = f(x);
 
-    while ((std::abs(y) > kEpsilon) && (x >= a) && (x <= b)) {
+    while ((std::abs(y) > epsilon) && (x >= a) && (x <= b)) {
         if (is_debug) {
             std::cout << x << " " << y << std::endl;
         }
