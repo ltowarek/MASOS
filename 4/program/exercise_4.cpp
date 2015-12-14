@@ -13,18 +13,19 @@ static const std::string plot_script_file_name = "plot.p";
 
 double f(double x, double y)
 {
-	double r = -2 * x * y;
-	return r;
+	return -2 * x * y;
 }
 
 double runge(double x, double y, double H)
 {
-	double K1 = (H * f(x, y));
-	double K2 = (H * f((x + 1 / 2 * H), (y + 1 / 2 * K1)));
-	double K3 = (H * f((x + 1 / 2 * H), (y + 1 / 2 * K2)));
-	double K4 = (H * f((x + H), (y + K3)));
-	double r = (y + ((K1 + 2 * K2 + 2 * K3 + K4) / 6));
-	return r;
+	double K1 = f(x, y);
+	double K2 = H * f(x + H / 2, y + K1 / 2);
+	double K3 = H * f(x + H / 4, y + (3 * K1 + K2) / 16);
+	double K4 = H * f(x + H / 2, y + K3 / 2);
+	double K5 = H * f(x + 3 * H / 4, y + (-3 * K2 + 6 * K3 + 9 * K4) / 16);
+	double K6 = H * f(x + H, y + (K1 + 4 * K2 + 6 * K3 - 12 * K4 + 8 * K5) / 7);
+	double result = y + (7 * K1 + 32 * K3 + 12 * K4 + 32 * K5 + 7 * K6) / 90;
+	return result;
 }
 
 void writeStringToFile(const std::string &file_name, const std::string &data) {
@@ -66,7 +67,7 @@ int main(int argc, char** argv) {
 
 	double y = x0;  // y(0) = x0
 	double x = a;
-	while(x <= b)
+	while (x <= b)
 	{
 		if (is_debug) {
 			std::cout << x << " " << y << std::endl;
