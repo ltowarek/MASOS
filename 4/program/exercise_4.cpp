@@ -11,14 +11,13 @@ static const double b = 1.0;
 static const std::string result_file_name = "result.csv";
 static const std::string plot_script_file_name = "plot.p";
 
-double f(double x, double y)
-{
-	return -2 * x * y;
+double f(double x, double y) {
+    return y;
 }
 
 double runge(double x, double y, double H)
 {
-	double K1 = f(x, y);
+	double K1 = H * f(x, y);
 	double K2 = H * f(x + H / 2, y + K1 / 2);
 	double K3 = H * f(x + H / 4, y + (3 * K1 + K2) / 16);
 	double K4 = H * f(x + H / 2, y + K3 / 2);
