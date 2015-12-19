@@ -1,3 +1,4 @@
+#define _USE_MATH_DEFINES
 #include <cmath>
 #include <cstdlib>
 #include <fstream>
@@ -11,8 +12,8 @@ static const double b = 1.0;
 static const std::string result_file_name = "result.csv";
 static const std::string plot_script_file_name = "plot.p";
 
-double f(double x, double y) {
-    return y;
+double f(double t, double x) {
+	return sin(50*t);
 }
 
 double runge(double x, double y, double H)
@@ -44,7 +45,7 @@ void createPlotScript(const std::string &result_file, std::string &script_code) 
 	s << "set xlabel \"x\"" << std::endl;
 	s << "set ylabel \"y\"" << std::endl;
 	s << "set xr [" << a << ":" << b << "]" << std::endl;
-	s << "plot \"" << result_file << "\" notitle with linespoints" << std::endl;
+	s << "plot \"" << result_file << "\" notitle with lines" << std::endl;
 	script_code = s.str();
 }
 
