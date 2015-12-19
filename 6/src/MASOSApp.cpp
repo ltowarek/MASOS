@@ -43,22 +43,27 @@ void Projectile::update(float initialVelocity, float angle, float time) {
 
 void Projectile::draw() {
     gl::color(mColor);
-	gl::drawSolidCircle(mPosition, mCircleRadius); 
+    gl::drawSolidCircle(mPosition, mCircleRadius);
 }
 
 class MASOSApp : public App {
   public:
-	void setup() override;
-	void mouseDown( MouseEvent event ) override;
-	void update() override;
-	void draw() override;
+    void setup() override;
+    void mouseDown( MouseEvent event ) override;
+    void update() override;
+    void draw() override;
+    void buttonStart();
+    void buttonPause();
 
 private:
     params::InterfaceGlRef mParams;
     float mInitialVelocity;
     float mAngle;
     float mTerminalVelocity;
-    float mTime;
+    float mCurrentTime;
+    float mDeltaTime;
+    float mStartTime;
+    float mEndTime;
     Projectile mProjectileUnderTest;
     Projectile mProjectileReference;
 };
@@ -68,7 +73,9 @@ void MASOSApp::setup()
     mInitialVelocity = 0.0f;
     mAngle = 0.0f;
     mTerminalVelocity = 0.0f;
-    mTime = 0.0f;
+    mDeltaTime = 0.3f;
+    mCurrentTime = mStartTime = 0.f;
+    mEndTime = 60.f;
     mProjectileUnderTest.setup();
     mProjectileReference.setup();
 
@@ -77,7 +84,12 @@ void MASOSApp::setup()
     mParams->addParam("Initial Velocity", &mInitialVelocity);
     mParams->addParam("Angle", &mAngle);
     mParams->addParam("Terminal Velocity", &mTerminalVelocity);
-    mParams->addParam("Time", &mTime);
+    mParams->addParam("Time", &mCurrentTime);
+    mParams->addParam("Delta time", &mDeltaTime);
+    mParams->addParam("Delta time", &mStartTime);
+    mParams->addParam("Delta time", &mEndTime);
+    mParams->addButton("Start", bind(&MASOSApp::buttonStart, this));
+    mParams->addButton("Pause", bind(&MASOSApp::buttonPause, this));
 }
 
 void MASOSApp::mouseDown( MouseEvent event )
@@ -86,16 +98,27 @@ void MASOSApp::mouseDown( MouseEvent event )
 
 void MASOSApp::update()
 {
-    mProjectileUnderTest.update(mInitialVelocity, mAngle, mTime, mTerminalVelocity);
-    mProjectileReference.update(mInitialVelocity, mAngle, mTime);
+    mProjectileUnderTest.update(mInitialVelocity, mAngle, mCurrentTime, mTerminalVelocity);
+    mProjectileReference.update(mInitialVelocity, mAngle, mCurrentTime);
 }
 
 void MASOSApp::draw()
 {
-	gl::clear(Color(0.0f, 0.0f, 0.0f)); 
+    gl::clear(Color(0.0f, 0.0f, 0.0f));
     mProjectileUnderTest.draw();
     mProjectileReference.draw();
     mParams->draw();
 }
+
+void MASOSApp::buttonStart()
+{
+    mCurrentTime = mStartTime;
+}
+
+void MASOSApp::buttonPause()
+{
+
+}
+
 
 CINDER_APP( MASOSApp, RendererGl )
