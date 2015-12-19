@@ -259,4 +259,15 @@ _Pvt_Extensions
 .fake/
 
 cinder_0.9.0_vc2013
+gmp-6.0.0
+m4
+regex2
+share
+1
+2
+4
+*.vcxproj
+*.sln
+*.filters
+include
 
