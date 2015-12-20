@@ -81,7 +81,7 @@ void MASOSApp::setup()
     mShouldQuit = false;
     reset();
 
-    mParams = params::InterfaceGl::create(getWindow(), "Parameters", toPixels(ivec2(200, 300)));
+    mParams = params::InterfaceGl::create(getWindow(), "Parameters", toPixels(ivec2(250, 300)));
 
     mParams->addParam("Initial Velocity", &mInitialVelocity, "min=0");
     mParams->addParam("Angle", &mAngle);
@@ -106,6 +106,7 @@ void MASOSApp::update()
 {
     mProjectileUnderTest.update(mInitialVelocity, mAngle, mCurrentTime, mTerminalVelocity);
     mProjectileReference.update(mInitialVelocity, mAngle, mCurrentTime);
+    mParams->setPosition(ivec2(0,0));
 }
 
 void MASOSApp::draw()
@@ -159,10 +160,8 @@ void MASOSApp::playLoop()
                 mIsPlaying = false;
                 mCurrentTime = mStartTime;
             }
-            update();
-            draw();
         }
-        _sleep(10);
+        _sleep(25);
     }
 }
 
