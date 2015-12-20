@@ -73,6 +73,7 @@ private:
     shared_ptr<thread> mThreadPlay;
     bool mIsPlaying;
     bool mShouldQuit;
+
 };
 
 void MASOSApp::setup()
@@ -85,10 +86,10 @@ void MASOSApp::setup()
     mParams->addParam("Initial Velocity", &mInitialVelocity, "min=0");
     mParams->addParam("Angle", &mAngle);
     mParams->addParam("Terminal Velocity", &mTerminalVelocity);
-    mParams->addParam("Current time", &mCurrentTime, "min=0");
-    mParams->addParam("Delta time", &mDeltaTime, "step=25");
-    mParams->addParam("Start time", &mStartTime, "min=0");
-    mParams->addParam("End time", &mEndTime, "min=0");
+    mParams->addParam("Current time [s]", &mCurrentTime, "min=0");
+    mParams->addParam("Delta time [ms]", &mDeltaTime, "step=25");
+    mParams->addParam("Start time [s]", &mStartTime, "min=0");
+    mParams->addParam("End time [s]", &mEndTime, "min=0");
     mParams->addButton("Start", bind(&MASOSApp::buttonStart, this));
     mParams->addButton("Pause", bind(&MASOSApp::buttonPause, this));
     mParams->addButton("Reset", bind(&MASOSApp::buttonReset, this));
@@ -133,12 +134,12 @@ void MASOSApp::buttonReset()
 
 void MASOSApp::reset()
 {
-    mInitialVelocity = 20.0f;
-    mAngle = 45.0f;
+    mInitialVelocity = 50.0f;
+    mAngle = 70.0f;
     mTerminalVelocity = 0.0f;
-    mDeltaTime = 0.1f;
+    mDeltaTime = 25;
     mCurrentTime = mStartTime = 0.f;
-    mEndTime = 60.f;
+    mEndTime = 5.f;
     mProjectileUnderTest.setup();
     mProjectileReference.setup();
 }
@@ -148,13 +149,20 @@ void MASOSApp::playLoop()
     while(!mShouldQuit)
     {
         if (mIsPlaying) {
-            mCurrentTime += mDeltaTime;
+            mCurrentTime += mDeltaTime/1000;
             if (mCurrentTime > mEndTime)
             {
                 mIsPlaying = false;
+                mCurrentTime = mEndTime;
+            } else if (mCurrentTime < mStartTime)
+            {
+                mIsPlaying = false;
+                mCurrentTime = mStartTime;
             }
+            update();
+            draw();
         }
-        _sleep(1000 * mDeltaTime);
+        _sleep(10);
     }
 }
 
