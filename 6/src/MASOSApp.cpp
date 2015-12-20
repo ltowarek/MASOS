@@ -11,7 +11,7 @@ class Projectile {
 public:
     void setup();
     void update(float initialVelocity, float angle, float time, float terminalVelocity);
-    void update(float initialVelocity, float angle, float time);
+    //void update(float initialVelocity, float angle, float time);
     void draw();
 private:
     vec2 mPosition;
@@ -35,11 +35,11 @@ void Projectile::update(float initialVelocity, float angle, float time, float te
     mPosition.x = mInitialPosition.x + ((initialVelocity * terminalVelocity / mG) * cosf(angle * mPi / 180.0f) * (1.0f - exp(-mG * time / terminalVelocity)));
     mPosition.y = mInitialPosition.y - ((initialVelocity * terminalVelocity / mG) * sinf(angle * mPi / 180.0f) * (1.0f- exp(-mG * time / terminalVelocity)) - terminalVelocity * time);
 }
-
+/*
 void Projectile::update(float initialVelocity, float angle, float time) {
     mPosition.x = mInitialPosition.x + (initialVelocity * time * cosf(angle * mPi / 180.0f));
     mPosition.y = mInitialPosition.y - (initialVelocity * time * sinf(angle * mPi / 180.0f) - 0.5f * mG * time * time);
-}
+}*/
 
 void Projectile::draw() {
     gl::color(mColor);
@@ -69,7 +69,7 @@ private:
     float mStartTime;
     float mEndTime;
     Projectile mProjectileUnderTest;
-    Projectile mProjectileReference;
+    //Projectile mProjectileReference;
     shared_ptr<thread> mThreadPlay;
     bool mIsPlaying;
     bool mShouldQuit;
@@ -83,9 +83,9 @@ void MASOSApp::setup()
 
     mParams = params::InterfaceGl::create(getWindow(), "Parameters", toPixels(ivec2(250, 300)));
 
-    mParams->addParam("Initial Velocity", &mInitialVelocity, "min=0");
-    mParams->addParam("Angle", &mAngle);
-    mParams->addParam("Terminal Velocity", &mTerminalVelocity);
+    mParams->addParam("Initial Velocity [m/s]", &mInitialVelocity, "min=0");
+    mParams->addParam("Angle [']", &mAngle);
+    mParams->addParam("Terminal Velocity [m/s]", &mTerminalVelocity);
     mParams->addParam("Current time [s]", &mCurrentTime, "min=0");
     mParams->addParam("Delta time [ms]", &mDeltaTime, "step=25");
     mParams->addParam("Start time [s]", &mStartTime, "min=0");
@@ -105,7 +105,7 @@ void MASOSApp::mouseDown( MouseEvent event )
 void MASOSApp::update()
 {
     mProjectileUnderTest.update(mInitialVelocity, mAngle, mCurrentTime, mTerminalVelocity);
-    mProjectileReference.update(mInitialVelocity, mAngle, mCurrentTime);
+    //mProjectileReference.update(mInitialVelocity, mAngle, mCurrentTime);
     mParams->setPosition(ivec2(0,0));
 }
 
@@ -113,7 +113,7 @@ void MASOSApp::draw()
 {
     gl::clear(Color(0.0f, 0.0f, 0.0f));
     mProjectileUnderTest.draw();
-    mProjectileReference.draw();
+    //mProjectileReference.draw();
     mParams->draw();
 }
 
@@ -135,14 +135,14 @@ void MASOSApp::buttonReset()
 
 void MASOSApp::reset()
 {
-    mInitialVelocity = 50.0f;
+    mInitialVelocity = 100.0f;
     mAngle = 70.0f;
-    mTerminalVelocity = 0.0f;
+    mTerminalVelocity = 50.0f;
     mDeltaTime = 25;
     mCurrentTime = mStartTime = 0.f;
-    mEndTime = 5.f;
+    mEndTime = 7.f;
     mProjectileUnderTest.setup();
-    mProjectileReference.setup();
+    //mProjectileReference.setup();
 }
 
 void MASOSApp::playLoop()
