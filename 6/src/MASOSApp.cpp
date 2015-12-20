@@ -48,12 +48,16 @@ void Projectile::draw() {
 
 class MASOSApp : public App {
   public:
+    MASOSApp::~MASOSApp();
     void setup() override;
     void mouseDown( MouseEvent event ) override;
     void update() override;
     void draw() override;
     void buttonStart();
     void buttonPause();
+    void buttonReset();
+    void playLoop();
+    void reset();
 
 private:
     params::InterfaceGlRef mParams;
@@ -66,30 +70,31 @@ private:
     float mEndTime;
     Projectile mProjectileUnderTest;
     Projectile mProjectileReference;
+    shared_ptr<thread> mThreadPlay;
+    bool mIsPlaying;
+    bool mShouldQuit;
 };
 
 void MASOSApp::setup()
 {
-    mInitialVelocity = 0.0f;
-    mAngle = 0.0f;
-    mTerminalVelocity = 0.0f;
-    mDeltaTime = 0.3f;
-    mCurrentTime = mStartTime = 0.f;
-    mEndTime = 60.f;
-    mProjectileUnderTest.setup();
-    mProjectileReference.setup();
+    mShouldQuit = false;
+    reset();
 
     mParams = params::InterfaceGl::create(getWindow(), "Parameters", toPixels(ivec2(200, 300)));
 
-    mParams->addParam("Initial Velocity", &mInitialVelocity);
+    mParams->addParam("Initial Velocity", &mInitialVelocity, "min=0");
     mParams->addParam("Angle", &mAngle);
     mParams->addParam("Terminal Velocity", &mTerminalVelocity);
-    mParams->addParam("Time", &mCurrentTime);
-    mParams->addParam("Delta time", &mDeltaTime);
-    mParams->addParam("Delta time", &mStartTime);
-    mParams->addParam("Delta time", &mEndTime);
+    mParams->addParam("Current time", &mCurrentTime, "min=0");
+    mParams->addParam("Delta time", &mDeltaTime, "step=25");
+    mParams->addParam("Start time", &mStartTime, "min=0");
+    mParams->addParam("End time", &mEndTime, "min=0");
     mParams->addButton("Start", bind(&MASOSApp::buttonStart, this));
     mParams->addButton("Pause", bind(&MASOSApp::buttonPause, this));
+    mParams->addButton("Reset", bind(&MASOSApp::buttonReset, this));
+
+    mIsPlaying = false;
+    mThreadPlay = shared_ptr<thread>(new thread(bind(&MASOSApp::playLoop, this)));
 }
 
 void MASOSApp::mouseDown( MouseEvent event )
@@ -112,12 +117,51 @@ void MASOSApp::draw()
 
 void MASOSApp::buttonStart()
 {
-    mCurrentTime = mStartTime;
+    mIsPlaying = true;
 }
 
 void MASOSApp::buttonPause()
 {
+    mIsPlaying = false;
+}
 
+void MASOSApp::buttonReset()
+{
+    mIsPlaying = false;
+    reset();
+}
+
+void MASOSApp::reset()
+{
+    mInitialVelocity = 20.0f;
+    mAngle = 45.0f;
+    mTerminalVelocity = 0.0f;
+    mDeltaTime = 0.1f;
+    mCurrentTime = mStartTime = 0.f;
+    mEndTime = 60.f;
+    mProjectileUnderTest.setup();
+    mProjectileReference.setup();
+}
+
+void MASOSApp::playLoop()
+{
+    while(!mShouldQuit)
+    {
+        if (mIsPlaying) {
+            mCurrentTime += mDeltaTime;
+            if (mCurrentTime > mEndTime)
+            {
+                mIsPlaying = false;
+            }
+        }
+        _sleep(1000 * mDeltaTime);
+    }
+}
+
+MASOSApp::~MASOSApp()
+{
+    mShouldQuit = true;
+    mThreadPlay->join();
 }
 
 
