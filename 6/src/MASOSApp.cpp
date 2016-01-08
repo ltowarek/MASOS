@@ -164,7 +164,8 @@ void MASOSApp::playLoop()
 {
     while(!mShouldQuit)
     {
-        if (mIsPlaying) {
+        if (mIsPlaying)
+        {
             mCurrentTime += mDeltaTime/1000;
             if (mCurrentTime > mEndTime)
             {
@@ -175,8 +176,8 @@ void MASOSApp::playLoop()
                 mIsPlaying = false;
                 mCurrentTime = mStartTime;
             }
+            _sleep(25);
         }
-        _sleep(25);
     }
 }
 
