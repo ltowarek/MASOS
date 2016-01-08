@@ -11,15 +11,17 @@ class Projectile {
 public:
     void setup();
     void update(float initialVelocity, float angle, float time, float terminalVelocity);
-    //void update(float initialVelocity, float angle, float time);
     void draw();
-private:
+
     vec2 mPosition;
     vec2 mInitialPosition;
+
+private:
     float mG;
     float mPi;
     float mCircleRadius;
     Color mColor;
+    vec2 mFixedPos;
 };
 
 void Projectile::setup() {
@@ -29,21 +31,26 @@ void Projectile::setup() {
     mPi = 3.14159265358979323846f;
     mCircleRadius = 5.0f;
     mColor = Color(1.0f, 1.0f, 1.0f);
+    mFixedPos = vec2(0, 0);
 }
 
 void Projectile::update(float initialVelocity, float angle, float time, float terminalVelocity) {
     mPosition.x = mInitialPosition.x + ((initialVelocity * terminalVelocity / mG) * cosf(angle * mPi / 180.0f) * (1.0f - exp(-mG * time / terminalVelocity)));
     mPosition.y = mInitialPosition.y - ((initialVelocity * terminalVelocity / mG) * sinf(angle * mPi / 180.0f) * (1.0f- exp(-mG * time / terminalVelocity)) - terminalVelocity * time);
+    mFixedPos = mPosition;
+    if (mPosition.x >= getWindowWidth() * 0.9)
+    {
+        mFixedPos.x = getWindowWidth() * 0.9;
+    }
+    if (mPosition.y <= getWindowHeight() * 0.1)
+    {
+        mFixedPos.y = getWindowHeight() * 0.1;
+    }
 }
-/*
-void Projectile::update(float initialVelocity, float angle, float time) {
-    mPosition.x = mInitialPosition.x + (initialVelocity * time * cosf(angle * mPi / 180.0f));
-    mPosition.y = mInitialPosition.y - (initialVelocity * time * sinf(angle * mPi / 180.0f) - 0.5f * mG * time * time);
-}*/
 
 void Projectile::draw() {
     gl::color(mColor);
-    gl::drawSolidCircle(mPosition, mCircleRadius);
+    gl::drawSolidCircle(mFixedPos, mCircleRadius);
 }
 
 class MASOSApp : public App {
@@ -69,11 +76,11 @@ private:
     float mStartTime;
     float mEndTime;
     Projectile mProjectileUnderTest;
-    //Projectile mProjectileReference;
     shared_ptr<thread> mThreadPlay;
     bool mIsPlaying;
     bool mShouldQuit;
-
+    float currX;
+    float currY;
 };
 
 void MASOSApp::setup()
@@ -94,6 +101,9 @@ void MASOSApp::setup()
     mParams->addButton("Pause", bind(&MASOSApp::buttonPause, this));
     mParams->addButton("Reset", bind(&MASOSApp::buttonReset, this));
 
+    mParams->addParam("Pos X", &currX);
+    mParams->addParam("Pos Y", &currY);
+
     mIsPlaying = false;
     mThreadPlay = shared_ptr<thread>(new thread(bind(&MASOSApp::playLoop, this)));
 }
@@ -105,7 +115,14 @@ void MASOSApp::mouseDown( MouseEvent event )
 void MASOSApp::update()
 {
     mProjectileUnderTest.update(mInitialVelocity, mAngle, mCurrentTime, mTerminalVelocity);
-    //mProjectileReference.update(mInitialVelocity, mAngle, mCurrentTime);
+    if (mProjectileUnderTest.mPosition.y >= getWindowCenter().y)
+    {
+        mProjectileUnderTest.mPosition.y = getWindowCenter().y;
+        mIsPlaying = false;
+    }
+    currX = mProjectileUnderTest.mPosition.x - mProjectileUnderTest.mInitialPosition.x;
+    currY = -(mProjectileUnderTest.mPosition.y - mProjectileUnderTest.mInitialPosition.y);
+    if (currY == -0) currY = 0;
     mParams->setPosition(ivec2(0,0));
 }
 
@@ -113,7 +130,6 @@ void MASOSApp::draw()
 {
     gl::clear(Color(0.0f, 0.0f, 0.0f));
     mProjectileUnderTest.draw();
-    //mProjectileReference.draw();
     mParams->draw();
 }
 
@@ -142,7 +158,6 @@ void MASOSApp::reset()
     mCurrentTime = mStartTime = 0.f;
     mEndTime = 7.f;
     mProjectileUnderTest.setup();
-    //mProjectileReference.setup();
 }
 
 void MASOSApp::playLoop()
