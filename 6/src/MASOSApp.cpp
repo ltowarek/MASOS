@@ -15,11 +15,11 @@ public:
 
     vec2 mPosition;
     vec2 mInitialPosition;
+    float mCircleRadius;
 
 private:
     float mG;
     float mPi;
-    float mCircleRadius;
     Color mColor;
     vec2 mFixedPos;
 };
@@ -65,6 +65,7 @@ class MASOSApp : public App {
     void buttonReset();
     void playLoop();
     void reset();
+    void drawScale();
 
 private:
     params::InterfaceGlRef mParams;
@@ -81,6 +82,7 @@ private:
     bool mShouldQuit;
     float currX;
     float currY;
+    gl::Texture2dRef mTextTexture;
 };
 
 void MASOSApp::setup()
@@ -130,7 +132,52 @@ void MASOSApp::draw()
 {
     gl::clear(Color(0.0f, 0.0f, 0.0f));
     mProjectileUnderTest.draw();
+    drawScale();
     mParams->draw();
+}
+
+void MASOSApp::drawScale()
+{
+    gl::drawLine(getWindowCenter() + vec2(0, mProjectileUnderTest.mCircleRadius), vec2(getWindowWidth() * 0.95, getWindowCenter().y + mProjectileUnderTest.mCircleRadius));
+    gl::drawLine(vec2(getWindowWidth() * 0.95, getWindowCenter().y + mProjectileUnderTest.mCircleRadius), vec2(getWindowWidth() * 0.95, 0));
+
+    Surface8u rendered;
+    for (int i = getWindowCenter().x; i < getWindowWidth(); i += 50)
+    {
+        TextLayout mTextLayout;
+        mTextLayout.clear(ColorA(0.8f, 0.2f, 0.2f, 0.2f));
+        mTextLayout.setFont(Font("Arial", 18));
+        mTextLayout.setColor(Color(1, 1, 1));
+        if (currX + getWindowCenter().x < getWindowWidth() * 0.9)
+        {
+            mTextLayout.addLine(std::to_string(int(i - getWindowCenter().x)));
+        }
+        else
+        {
+            mTextLayout.addLine(std::to_string(int((currX + getWindowCenter().x - getWindowWidth() * 0.9) + i - getWindowCenter().x)));
+        }
+        rendered = mTextLayout.render(true, false);
+        mTextTexture = gl::Texture2d::create(rendered);
+        gl::draw(mTextTexture, vec2(i - mProjectileUnderTest.mCircleRadius, getWindowCenter().y + 10));
+    }
+    for (int i = getWindowCenter().y; i > 0; i -= 30)
+    {
+        TextLayout mTextLayout;
+        mTextLayout.clear(ColorA(0.8f, 0.2f, 0.2f, 0.2f));
+        mTextLayout.setFont(Font("Arial", 18));
+        mTextLayout.setColor(Color(1, 1, 1));
+        if (getWindowCenter().y - currY > getWindowHeight() * 0.1)
+        {
+            mTextLayout.addLine(std::to_string(int(getWindowCenter().y - i)));
+        }
+        else
+        {
+            mTextLayout.addLine(std::to_string(int(currY - i + getWindowHeight() * 0.1)));
+        }
+        rendered = mTextLayout.render(true, false);
+        mTextTexture = gl::Texture2d::create(rendered);
+        gl::draw(mTextTexture, vec2(getWindowWidth() * 0.95 + 2, i - 14));
+    }
 }
 
 void MASOSApp::buttonStart()
