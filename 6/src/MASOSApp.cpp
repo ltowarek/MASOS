@@ -52,7 +52,7 @@ float Projectile::calculateScale(float initialVelocity, float angle, float termi
     for (float time = 0; posY >= 0; time += 0.25f) {
         posX = ((initialVelocity * terminalVelocity / mG) * cosf(angle * mPi / 180.0f) * (1.0f - exp(-mG * time / terminalVelocity)));
         posY = ((initialVelocity * terminalVelocity / mG) * sinf(angle * mPi / 180.0f) * (1.0f - exp(-mG * time / terminalVelocity)) - terminalVelocity * time);
-        if (posX * scale > maxWidth || posY * scale > maxHeight)
+        if (posX * scale + mCircleRadius > maxWidth || posY * scale + mCircleRadius > maxHeight)
         {
             scale *= 0.9;
         }
@@ -91,6 +91,10 @@ private:
     float currY;
     gl::Texture2dRef mTextTexture;
     float scale;
+    float oldTime;
+    float oldAngle;
+    float oldTerminalVelocity;
+    float oldInitialVelocity; 
 };
 
 void MASOSApp::setup()
@@ -101,8 +105,8 @@ void MASOSApp::setup()
     mParams = params::InterfaceGl::create(getWindow(), "Parameters", toPixels(ivec2(250, 300)));
 
     mParams->addParam("Initial Velocity [m/s]", &mInitialVelocity, "min=0");
-    mParams->addParam("Angle [']", &mAngle);
-    mParams->addParam("Terminal Velocity [m/s]", &mTerminalVelocity);
+    mParams->addParam("Angle [']", &mAngle, "min=0, max=90");
+    mParams->addParam("Terminal Velocity [m/s]", &mTerminalVelocity, "min=1");
     mParams->addParam("Current time [s]", &mCurrentTime, "min=0");
     mParams->addParam("Delta time [ms]", &mDeltaTime, "step=25");
     mParams->addParam("Start time [s]", &mStartTime, "min=0");
@@ -125,12 +129,39 @@ void MASOSApp::mouseDown( MouseEvent event )
 
 void MASOSApp::update()
 {
+    if (mAngle != oldAngle)
+    {
+        scale = mProjectileUnderTest.calculateScale(mInitialVelocity, mAngle, mTerminalVelocity, getWindowCenter().x, getWindowCenter().y);
+    }
+    oldAngle = mAngle;
+
+    if (mTerminalVelocity != oldTerminalVelocity)
+    {
+        scale = mProjectileUnderTest.calculateScale(mInitialVelocity, mAngle, mTerminalVelocity, getWindowCenter().x, getWindowCenter().y);
+    }
+    oldTerminalVelocity = mTerminalVelocity;
+
+    if (mInitialVelocity != oldInitialVelocity)
+    {
+        scale = mProjectileUnderTest.calculateScale(mInitialVelocity, mAngle, mTerminalVelocity, getWindowCenter().x, getWindowCenter().y);
+    }
+    oldInitialVelocity =mInitialVelocity;
+    
+
+    float tmp = mProjectileUnderTest.mPosition.y;
     mProjectileUnderTest.update(mInitialVelocity, mAngle, mCurrentTime, mTerminalVelocity);
     if (mProjectileUnderTest.mPosition.y > 0)
     {
         mProjectileUnderTest.mPosition.y = 0;
         mIsPlaying = false;
     }
+    if (tmp >= 0 && mProjectileUnderTest.mPosition.y >= 0)
+    {
+        mProjectileUnderTest.mPosition.y = 0;
+        mIsPlaying = false;
+        mCurrentTime = oldTime;
+    }
+    oldTime = mCurrentTime;
     currX = mProjectileUnderTest.mPosition.x;
     currY = -(mProjectileUnderTest.mPosition.y);
     if (currY == -0) currY = 0;
@@ -164,11 +195,16 @@ void MASOSApp::buttonReset()
 void MASOSApp::reset()
 {
     mInitialVelocity = 100.0f;
+    oldInitialVelocity = mInitialVelocity;
     mAngle = 70.0f;
+    oldAngle = mAngle;
     mTerminalVelocity = 50.0f;
+    oldTerminalVelocity = mTerminalVelocity;
     mDeltaTime = 25;
     mCurrentTime = mStartTime = 0.f;
-    mEndTime = 7.f;
+    mEndTime = 10.f;
+    scale = 1;
+    oldTime = 0;
     mProjectileUnderTest.setup();
 }
 
