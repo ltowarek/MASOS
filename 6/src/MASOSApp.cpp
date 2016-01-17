@@ -11,7 +11,9 @@ class Projectile {
 public:
     void setup();
     void update(float initialVelocity, float angle, float time, float terminalVelocity);
-    void draw();
+    void draw(float scale);
+
+    float calculateScale(float initialVelocity, float angle, float terminalVelocity, float maxWidth, float maxHeight);
 
     vec2 mPosition;
     vec2 mInitialPosition;
@@ -21,7 +23,6 @@ private:
     float mG;
     float mPi;
     Color mColor;
-    vec2 mFixedPos;
 };
 
 void Projectile::setup() {
@@ -31,26 +32,32 @@ void Projectile::setup() {
     mPi = 3.14159265358979323846f;
     mCircleRadius = 5.0f;
     mColor = Color(1.0f, 1.0f, 1.0f);
-    mFixedPos = vec2(0, 0);
 }
 
 void Projectile::update(float initialVelocity, float angle, float time, float terminalVelocity) {
-    mPosition.x = mInitialPosition.x + ((initialVelocity * terminalVelocity / mG) * cosf(angle * mPi / 180.0f) * (1.0f - exp(-mG * time / terminalVelocity)));
-    mPosition.y = mInitialPosition.y - ((initialVelocity * terminalVelocity / mG) * sinf(angle * mPi / 180.0f) * (1.0f- exp(-mG * time / terminalVelocity)) - terminalVelocity * time);
-    mFixedPos = mPosition;
-    if (mPosition.x >= getWindowWidth() * 0.9)
-    {
-        mFixedPos.x = getWindowWidth() * 0.9;
-    }
-    if (mPosition.y <= getWindowHeight() * 0.1)
-    {
-        mFixedPos.y = getWindowHeight() * 0.1;
-    }
+    mPosition.x = ((initialVelocity * terminalVelocity / mG) * cosf(angle * mPi / 180.0f) * (1.0f - exp(-mG * time / terminalVelocity)));
+    mPosition.y = - ((initialVelocity * terminalVelocity / mG) * sinf(angle * mPi / 180.0f) * (1.0f- exp(-mG * time / terminalVelocity)) - terminalVelocity * time);
 }
 
-void Projectile::draw() {
+void Projectile::draw(float scale) {
     gl::color(mColor);
-    gl::drawSolidCircle(mFixedPos, mCircleRadius);
+    gl::drawSolidCircle(mInitialPosition + (mPosition * scale), mCircleRadius);
+}
+
+float Projectile::calculateScale(float initialVelocity, float angle, float terminalVelocity, float maxWidth, float maxHeight)
+{
+    float scale = 1;
+    float posX = 0;
+    float posY = 0;
+    for (float time = 0; posY >= 0; time += 0.25f) {
+        posX = ((initialVelocity * terminalVelocity / mG) * cosf(angle * mPi / 180.0f) * (1.0f - exp(-mG * time / terminalVelocity)));
+        posY = ((initialVelocity * terminalVelocity / mG) * sinf(angle * mPi / 180.0f) * (1.0f - exp(-mG * time / terminalVelocity)) - terminalVelocity * time);
+        if (posX * scale > maxWidth || posY * scale > maxHeight)
+        {
+            scale *= 0.9;
+        }
+    }
+    return scale;
 }
 
 class MASOSApp : public App {
@@ -83,6 +90,7 @@ private:
     float currX;
     float currY;
     gl::Texture2dRef mTextTexture;
+    float scale;
 };
 
 void MASOSApp::setup()
@@ -103,6 +111,7 @@ void MASOSApp::setup()
     mParams->addButton("Pause", bind(&MASOSApp::buttonPause, this));
     mParams->addButton("Reset", bind(&MASOSApp::buttonReset, this));
 
+    mParams->addParam("Scale", &scale);
     mParams->addParam("Pos X", &currX);
     mParams->addParam("Pos Y", &currY);
 
@@ -117,13 +126,13 @@ void MASOSApp::mouseDown( MouseEvent event )
 void MASOSApp::update()
 {
     mProjectileUnderTest.update(mInitialVelocity, mAngle, mCurrentTime, mTerminalVelocity);
-    if (mProjectileUnderTest.mPosition.y >= getWindowCenter().y)
+    if (mProjectileUnderTest.mPosition.y > 0)
     {
-        mProjectileUnderTest.mPosition.y = getWindowCenter().y;
+        mProjectileUnderTest.mPosition.y = 0;
         mIsPlaying = false;
     }
-    currX = mProjectileUnderTest.mPosition.x - mProjectileUnderTest.mInitialPosition.x;
-    currY = -(mProjectileUnderTest.mPosition.y - mProjectileUnderTest.mInitialPosition.y);
+    currX = mProjectileUnderTest.mPosition.x;
+    currY = -(mProjectileUnderTest.mPosition.y);
     if (currY == -0) currY = 0;
     mParams->setPosition(ivec2(0,0));
 }
@@ -131,57 +140,13 @@ void MASOSApp::update()
 void MASOSApp::draw()
 {
     gl::clear(Color(0.0f, 0.0f, 0.0f));
-    mProjectileUnderTest.draw();
-    drawScale();
+    mProjectileUnderTest.draw(scale);
     mParams->draw();
-}
-
-void MASOSApp::drawScale()
-{
-    gl::drawLine(getWindowCenter() + vec2(0, mProjectileUnderTest.mCircleRadius), vec2(getWindowWidth() * 0.95, getWindowCenter().y + mProjectileUnderTest.mCircleRadius));
-    gl::drawLine(vec2(getWindowWidth() * 0.95, getWindowCenter().y + mProjectileUnderTest.mCircleRadius), vec2(getWindowWidth() * 0.95, 0));
-
-    Surface8u rendered;
-    for (int i = getWindowCenter().x; i < getWindowWidth(); i += 50)
-    {
-        TextLayout mTextLayout;
-        mTextLayout.clear(ColorA(0.8f, 0.2f, 0.2f, 0.2f));
-        mTextLayout.setFont(Font("Arial", 18));
-        mTextLayout.setColor(Color(1, 1, 1));
-        if (currX + getWindowCenter().x < getWindowWidth() * 0.9)
-        {
-            mTextLayout.addLine(std::to_string(int(i - getWindowCenter().x)));
-        }
-        else
-        {
-            mTextLayout.addLine(std::to_string(int((currX + getWindowCenter().x - getWindowWidth() * 0.9) + i - getWindowCenter().x)));
-        }
-        rendered = mTextLayout.render(true, false);
-        mTextTexture = gl::Texture2d::create(rendered);
-        gl::draw(mTextTexture, vec2(i - mProjectileUnderTest.mCircleRadius, getWindowCenter().y + 10));
-    }
-    for (int i = getWindowCenter().y; i > 0; i -= 30)
-    {
-        TextLayout mTextLayout;
-        mTextLayout.clear(ColorA(0.8f, 0.2f, 0.2f, 0.2f));
-        mTextLayout.setFont(Font("Arial", 18));
-        mTextLayout.setColor(Color(1, 1, 1));
-        if (getWindowCenter().y - currY > getWindowHeight() * 0.1)
-        {
-            mTextLayout.addLine(std::to_string(int(getWindowCenter().y - i)));
-        }
-        else
-        {
-            mTextLayout.addLine(std::to_string(int(currY - i + getWindowHeight() * 0.1)));
-        }
-        rendered = mTextLayout.render(true, false);
-        mTextTexture = gl::Texture2d::create(rendered);
-        gl::draw(mTextTexture, vec2(getWindowWidth() * 0.95 + 2, i - 14));
-    }
 }
 
 void MASOSApp::buttonStart()
 {
+    scale = mProjectileUnderTest.calculateScale(mInitialVelocity, mAngle, mTerminalVelocity, getWindowCenter().x, getWindowCenter().y);
     mIsPlaying = true;
 }
 
