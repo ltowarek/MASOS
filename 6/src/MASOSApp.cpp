@@ -95,6 +95,7 @@ private:
     float oldAngle;
     float oldTerminalVelocity;
     float oldInitialVelocity; 
+    float oldScale;
 };
 
 void MASOSApp::setup()
@@ -135,6 +136,12 @@ void MASOSApp::update()
     }
     oldAngle = mAngle;
 
+    if (scale != oldScale)
+    {
+        scale = mProjectileUnderTest.calculateScale(mInitialVelocity, mAngle, mTerminalVelocity, getWindowCenter().x, getWindowCenter().y);
+    }
+    oldScale = scale;
+
     if (mTerminalVelocity != oldTerminalVelocity)
     {
         scale = mProjectileUnderTest.calculateScale(mInitialVelocity, mAngle, mTerminalVelocity, getWindowCenter().x, getWindowCenter().y);
@@ -161,6 +168,12 @@ void MASOSApp::update()
         mIsPlaying = false;
         mCurrentTime = oldTime;
     }
+
+    if (mProjectileUnderTest.mPosition.x < 0)
+    {
+        mProjectileUnderTest.mPosition.x = 0.f;
+    }
+
     oldTime = mCurrentTime;
     currX = mProjectileUnderTest.mPosition.x;
     currY = -(mProjectileUnderTest.mPosition.y);
@@ -178,6 +191,7 @@ void MASOSApp::draw()
 void MASOSApp::buttonStart()
 {
     scale = mProjectileUnderTest.calculateScale(mInitialVelocity, mAngle, mTerminalVelocity, getWindowCenter().x, getWindowCenter().y);
+    oldScale = scale;
     mIsPlaying = true;
 }
 
@@ -204,6 +218,7 @@ void MASOSApp::reset()
     mCurrentTime = mStartTime = 0.f;
     mEndTime = 10.f;
     scale = 1;
+    oldScale = scale;
     oldTime = 0;
     mProjectileUnderTest.setup();
 }
